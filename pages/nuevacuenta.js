@@ -3,27 +3,24 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useQuery, gql } from "@apollo/client";
+import { useMutation, gql } from "@apollo/client";
 
-const QUERY = gql`
-  query obtenerProductos {
-    obtenerProductos {
+const NUEVA_CUENTA = gql`
+  mutation nuevoUsuario($input: UsuarioInput) {
+    nuevoUsuario(input: $input) {
       id
       nombre
-      precio
-      existencia
+      apellido
+      email
     }
   }
 `;
 
 const NuevaCuenta = () => {
-  //obtener productos Graphql
-  const { data, loading, error } = useQuery(QUERY);
+  //Crear nuevo usuario
+  const [nuevoUsuario] = useMutation(NUEVA_CUENTA);
 
-  console.log(data);
-  console.log(loading);
-  console.log(error);
-
+  const [mensaje, setMensaje] = useState(null);
   const [disabled, setDisabled] = useState(true);
 
   const formik = useFormik({
@@ -43,10 +40,42 @@ const NuevaCuenta = () => {
         .required("El password no puede ir vacía")
         .min(6, "El password debe ser de al menos 6 caracteres"),
     }),
-    onSubmit: (valores) => {
-      console.log("enviando ", valores);
+    onSubmit: async (valores) => {
+      // console.log("enviando ", valores);
+      const { nombre, apellido, email, password } = valores;
+      try {
+        const { data } = await nuevoUsuario({
+          variables: {
+            input: {
+              nombre,
+              apellido,
+              email,
+              password,
+            },
+          },
+        });
+
+        //usuario creado
+
+        //redirigir user iniciar sesión
+        console.log(data);
+      } catch (error) {
+        setMensaje(error.message);
+
+        setTimeout(() => {
+          setMensaje(null);
+        }, 3000);
+      }
     },
   });
+
+  const mostrarMensaje = () => {
+    return (
+      <div className="bg-red-800 text-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+        <p>{mensaje}</p>
+      </div>
+    );
+  };
 
   const validationForm =
     formik.errors.nombre ||
@@ -58,11 +87,10 @@ const NuevaCuenta = () => {
     setDisabled(validationForm);
   }, [validationForm]);
 
-  if (loading) return "Cargando...";
-
   return (
     <>
       <Layout>
+        {mensaje && mostrarMensaje()}
         <h1 className="text-center text-2xl text-white font-light">
           Crear nueva cuenta
         </h1>
