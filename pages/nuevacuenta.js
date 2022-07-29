@@ -1,10 +1,29 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
+import { useQuery, gql } from "@apollo/client";
+
+const QUERY = gql`
+  query obtenerProductos {
+    obtenerProductos {
+      id
+      nombre
+      precio
+      existencia
+    }
+  }
+`;
 
 const NuevaCuenta = () => {
+  //obtener productos Graphql
+  const { data, loading, error } = useQuery(QUERY);
+
+  console.log(data);
+  console.log(loading);
+  console.log(error);
+
   const [disabled, setDisabled] = useState(true);
 
   const formik = useFormik({
@@ -38,6 +57,8 @@ const NuevaCuenta = () => {
   useEffect(() => {
     setDisabled(validationForm);
   }, [validationForm]);
+
+  if (loading) return "Cargando...";
 
   return (
     <>
