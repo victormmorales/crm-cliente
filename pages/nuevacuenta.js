@@ -62,7 +62,7 @@ const NuevaCuenta = () => {
 
         setTimeout(() => {
           setMensaje(null);
-          router.push("/");
+          router.push("/login");
         }, 3000);
 
         //redirigir user iniciar sesión
