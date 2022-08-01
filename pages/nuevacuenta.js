@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
@@ -22,6 +23,7 @@ const NuevaCuenta = () => {
 
   const [mensaje, setMensaje] = useState(null);
   const [disabled, setDisabled] = useState(true);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -56,6 +58,12 @@ const NuevaCuenta = () => {
         });
 
         //usuario creado
+        setMensaje(`¡Bienvenido ${data.nuevoUsuario.nombre}!`);
+
+        setTimeout(() => {
+          setMensaje(null);
+          router.push("/");
+        }, 3000);
 
         //redirigir user iniciar sesión
         console.log(data);
@@ -71,7 +79,7 @@ const NuevaCuenta = () => {
 
   const mostrarMensaje = () => {
     return (
-      <div className="bg-red-800 text-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
+      <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">
         <p>{mensaje}</p>
       </div>
     );
