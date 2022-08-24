@@ -64,9 +64,6 @@ const NuevaCuenta = () => {
           setMensaje(null);
           router.push("/login");
         }, 3000);
-
-        //redirigir user iniciar sesión
-        console.log(data);
       } catch (error) {
         setMensaje(error.message);
 
