@@ -8,7 +8,7 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  //leer el storage almacenado
+  //leer el localstorage almacenado
   const token = localStorage.getItem("token");
 
   return {
